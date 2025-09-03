@@ -8,6 +8,7 @@
  * 
  */
 #include <iostream>
+#include <string>
 
 template <typename T>
 T max(T a, T b) 
@@ -23,4 +24,5 @@ int main()
 {
     std::cout << max(3, 7) << std::endl;        // int version
     std::cout << max(3.14, 2.71) << std::endl;  // double version
+    std::cout << max<int>(3.14, 2.71) << std::endl;
 }
