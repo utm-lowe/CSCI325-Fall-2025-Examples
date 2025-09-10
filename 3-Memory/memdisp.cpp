@@ -61,7 +61,23 @@ void dispmem(std::vector<VarSpec> vars);
 
 int main()
 {
-    
+    int x = 1541;
+    char c = 'T';
+    double d = 12.5;
+    float f = 12.5;
+    int *p;
+    int ar[] = {1, 2, 3, 4, 5};
+    std::vector<VarSpec> vars = {{"x", &x, sizeof(x)}, 
+                                 {"c", &c, sizeof(c)},
+                                 {"d", &d, sizeof(d)},
+                                 {"f", &f, sizeof(f)},
+                                 {"p", &p, sizeof(p)},
+                                 {"ar", ar, sizeof(ar)}};
+
+    p = &x;
+    *p = 42;
+
+    dispmem(vars);
 }
 
 // Display memory for a variable
