@@ -10,7 +10,7 @@ int main() {
   std::vector<int> v(in, end);
 
   std::cout << "You entered: ";
-  std::ostream_iterator<int> out(std::cout, " ");
+  std::ostream_iterator<int> out(std::cout, ", ");
   copy(v.begin(), v.end(), out);
   std::cout << "\n";
 }
