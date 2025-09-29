@@ -15,6 +15,8 @@
 #include <list>
 #include <random>
 #include <ctime>
+#include <string>
+#include <iterator>
 
 // A few global variables (It's ok. Trust me, I have a PhD)
 unsigned int n;
@@ -22,40 +24,69 @@ std::mt19937 mt(static_cast<unsigned int>(time(nullptr)));
 
 // function prototypes
 template<typename T> void randomPushBack(T& container);
-template<typename T> void randomInsert(T& container);
+template<typename T> void randomPushFront(T& container);
+template<typename T> void containerTest(const std::string& name);
 
 
 int main(int argc, char **argv)
 {
     if(argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <n>" << std::endl;
+        return -1;
     }
-    n = std::strtoi(argv[1]);
+    n = std::stoi(argv[1]);
 
-    std::vector<int>  v;
-    std::list<int> l;
-    
+    containerTest<std::vector<int>>("Vector");
+    containerTest<std::list<int>>("List");
+
     return 0;
 }
 
 
-
-
+/**
+ * @brief Insert n elements at the end of the list.
+ * 
+ * @tparam T 
+ * @param container 
+ */
 template<typename T> 
 void randomPushBack(T& container)
 {
     std::uniform_int_distribution<int> dist(0, n*10);
-    for(int i=0; i<10; i++) {
+    for(int i=0; i<n; i++) {
         container.push_back(dist(mt));
     }
 }
 
 
-template<typename T> void randomInsert(T& container)
+/**
+ * @brief Insert n elements at the front of the list.
+ * 
+ * @tparam T 
+ * @param container 
+ */
+template<typename T> void randomPushFront(T& container)
 {
     std::uniform_int_distribution<int> dist(0, n*10);
-    std::uniform_int_distribution<int> index(0, n-2);
-    for(int i=0; i<10; i++) {
-        container.insert(container.begin() + index(mt), dist(index));
+    for(int i=0; i<n; i++) {
+        container.insert(container.begin(), dist(mt));
     }
+}
+
+/**
+ * @brief Run the container timing tests for inserting at either end.
+ * 
+ * @tparam T 
+ * @param name 
+ */
+template<typename T> void containerTest(const std::string& name)
+{
+    T container;
+
+
+    auto pushTimer = makeTimingFixture<std::chrono::nanoseconds>(randomPushBack<T>, container);
+    auto insertTimer = makeTimingFixture<std::chrono::nanoseconds>(randomPushFront<T>, container);
+
+    std::cout << name << " push_back time: " << pushTimer.average(10) << std::endl;
+    std::cout << name << " Insert at front time: " << insertTimer.average(10) << std::endl;
 }
