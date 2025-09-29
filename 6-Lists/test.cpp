@@ -25,6 +25,7 @@ std::mt19937 mt(static_cast<unsigned int>(time(nullptr)));
 // function prototypes
 template<typename T> void randomPushBack(T& container);
 template<typename T> void randomPushFront(T& container);
+template<typename T> void randomAccess(T& container);
 template<typename T> void containerTest(const std::string& name);
 
 
@@ -73,6 +74,24 @@ template<typename T> void randomPushFront(T& container)
     }
 }
 
+
+/**
+ * @brief Access n random elements in the container.
+ * 
+ * @tparam T 
+ * @param container 
+ */
+template<typename T> void randomAccess(T& container)
+{
+    std::uniform_int_distribution<int> dist(0, container.size()-1);
+    for(int i=0; i<n; i++) {
+        auto it = container.begin();
+        std::advance(it, dist(mt));
+        int x = *it;
+    }
+}
+
+
 /**
  * @brief Run the container timing tests for inserting at either end.
  * 
@@ -89,4 +108,9 @@ template<typename T> void containerTest(const std::string& name)
 
     std::cout << name << " push_back time: " << pushTimer.average(10) << std::endl;
     std::cout << name << " Insert at front time: " << insertTimer.average(10) << std::endl;
+
+    // populate the container for access testing
+    randomPushBack<T>(container);
+    auto accessTimer = makeTimingFixture<std::chrono::nanoseconds>(randomAccess<T>, container);
+    std::cout << name << " Random access time: " << accessTimer.average(10) << std::endl;
 }
